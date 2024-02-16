@@ -1,0 +1,10 @@
+**mysql 끄기 전 XAMPP 종료 금지**
+
+DB URL: mysql://username:password@localhost:5432/dbname
+
+데이터베이스 제품/드라이버 프로토콜: "postgresql://"
+사용자 인증 정보: "username:password@"
+호스트 및 포트: "localhost:5432"
+데이터베이스 이름: "dbname"
+
+연결 방법 공부!!
