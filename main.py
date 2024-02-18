@@ -23,9 +23,39 @@ async def read_users():
 
     return users
 
-app.get("/users/{user_id}")
+@app.get("/users/{user_id}")
 async def read_user(user_id: int):
 
     user = session.query(UserTable).filter(UserTable.id == user_id).first()
 
     return user
+
+@app.post("/user")
+async def create_user(name:str, age: int):
+
+    user = UserTable()                                                                      # ORM 객체를 만듦 (서버와 DB의 중간다리 역할), ORM 객체에는 __tablename__에 해당하는 테이블의 정보가 있음
+    user.name = name                                                                        # name 입력          
+    user.age = age                                                                          # age 입력  
+
+    session.add(user)                                                                       # session에 user ORM객체 추가
+    session.commit()                                                                        # session 실행 (데이터베이스에 위의 name, age 추가)
+
+    return f"{name} created..."
+
+@app.put("/users")
+async def update_users(users: List[User]):
+
+    for i in users:
+        user = session.query(UserTable).filter(UserTable.id == i.id).first()
+        user.name = i.name
+        user.age = i.age
+        session.commit()
+
+        return f"{users[0].name} updated..."
+    
+@app.delete("/user")
+async def delete_users(userid: int): 
+    user = session.query(UserTable).filter(UserTable.id == userid).delete()
+    session.commit()
+
+    return "User deleted..."
