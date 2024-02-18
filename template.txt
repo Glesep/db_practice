@@ -1,0 +1,5 @@
+처음엔 GET 함수로 user_list.html 파일에 들어간 후
+
+그 파일 안에서 각각의 버튼으로 POST, PUT, DELETE 요청을 하는 함수를 불러옴  
+
+서버로 json 파일을 보내는 이유?

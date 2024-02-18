@@ -17,7 +17,7 @@ app.add_middleware(
 )
 
 # 앞에 골뱅이 제발 붙여!!
-@app.get("/users/")
+@app.get("/users")
 async def read_users():
     users = session.query(UserTable).all()
 

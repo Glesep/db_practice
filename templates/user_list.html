@@ -1,10 +1,12 @@
+<!--GET 함수로 불러옴 -->
+
 <!DOCTYPE html>
 <html lang = "kr">
 <head>
     <meta charset="UTF-8">
     <title>Users</title>
 
-{% block scripts %}
+{% block scripts %}                                                                                                                 <!--기초 스크립트 블록 시작-->
         <script>
             function getCookie(name) {
                 var cookieValue = null;
@@ -30,80 +32,82 @@
 
             // AJAX로 등록
             function postUser() {
-                var uname = document.getElementById('username_').value;                                                             // name_ 값을 받아와 cname에 저장
-                var uage = document.getElementById('userage_').value;                                                               // timezone_ 값을 받아와 ctimezone_에 저장
+                var uname = document.getElementById('username_').value;                                                             // username_ 값을 받아와 uname에 저장
+                var uage = document.getElementById('userage_').value;                                                               // userage_ 값을 받아와 uage에 저장
 
-                var data = {id: 0, name: uname, age: uage};                                                                         // 데이터를 딕셔너리 형태로 입력
-                var jsonstr = JSON.stringify(data);                                                                                 // JSON 형식으로 data를 변환
+                var data = {id: 0, name: uname, age: uage};                                                                         // 데이터를 딕셔너리 형태로 data 변수에 저장
+                var jsonstr = JSON.stringify(data);                                                                                 // JSON 형식으로 data를 변환, jsonstr 변수에 저장
             
 
                 xhr = new XMLHttpRequest();                                                                                         // request 요청을 쉽게 할 수 있도록 객체 생성 (편지 준비)(AJAX 요청)
                 xhr.onreadystatechange = function() {                                                                               // XMLHttpRequest 객체의 상태가 변경될 때마다 호출되는 이벤트 핸들러
                     if (xhr.readyState == 4) {                                                                                      // 사용자가 응답을 처리할 수 있는 상태일 때,
-                        var data = xhr.responseText;                                                                                // responseText: 서버로부터 받은 응답의 내용 (텍스트 형식)
-                        var obj = JSON.parse(data);                                                                                 // responseText를 data변수에 저장(JSON 파일), 그리고 JavaScript 객체로 변환
+                        // var data = xhr.responseText;                                                                                // responseText: 서버로부터 받은 응답의 내용 (텍스트 형식), responseText를 data 변수에 저장(JSON 파일) 
+                        // var obj = JSON.parse(data);                                                                                 // JavaScript 객체로 변환 후 obj 변수에 저장
 
-                        var node = document.createElement("div");
+                        var node = document.createElement("div");                                                                   // div 태그를 만든 후 node 변수에 저장
                         var textnode = document.createTextNode(uname + "-" + uage + " added...");                                   // 새로운 텍스트를 가진 Textnode를 생성, textnode변수에 저장, 후에 특정 요소에 추가 가능
                         node.appendChild(textnode);                                                                                 // div 태그에 textnode를 추가(텍스트 추가)
-                        document.getElementById("usertable").appendChild(node);                                                     // usertalbe이란 id를 가진 태그에 node를 추가(div 태그 추가)
+                        document.getElementById("usertable").appendChild(node);                                                     // usertalbe이란 id를 가진 태그에 node를 추가(텍스트가 안에 들어있는 div 태그 추가)
 
                     }
                 };
-                xhr.open("POST", "/users", true);                                                                                   // /cities 엔드포인트에 POST 명령 준비 (편지 작성)
+                xhr.open("POST", "/users", true);                                                                                   // /users 엔드포인트에 POST 명령 준비 (편지 작성)
                 xhr.setRequestHeader("X-CSRFToken", csrftoken);                                                                     // X-CSRFToken에 csrftoken 값을 설정, CSRF 공격에 대한 예방
                 xhr.setRequestHeader('Content-Type', 'application/json');                                                           // **JSON 파일 보낼 시 무조건 추가!!!!**
-                xhr.send(jsonstr);                                                                                                  // datastr 데이터 보내기 (편지 전송)
+                xhr.send(jsonstr);                                                                                                  // jsonstr 데이터 보내기 (편지 전송)
             }
             
             // AJAX로 수정
             // elem: 요소(버튼)을 가리키는(참조) 변수
             function putUser(elem) {
-                var uid = parseInt(elem.getAttribute('userid'));                                                                 // elem의 userid라는 속성을 가져와(지정된 요소의 속성 값 반환) 인트로 바꾸고 uid라는 변수에 대입
-                var uname = document.getElementById('username_'+uid).value;
-                var uage = document.getElementById('userage_'+uid).value;
+                var uid = parseInt(elem.getAttribute('userid'));                                                                    // elem의 userid라는 속성을 가져온 후(지정된 요소의 속성 값 반환) 타입을 int로 바꾸고 uid라는 변수에 대입
+                var uname = document.getElementById('username_'+uid).value;                                                         // 괄호 안에 해당하는 id를 가진 요소의 값을 uname 변수에 저장
+                var uage = document.getElementById('userage_'+uid).value;                                                           // 괄호 안에 해당하는 id를 가진 요소의 값을 uage 변수에 저장
 
-                var data = {id: uid, name: uname, age: uage}
-                var jsonstr = JSON.stringify(data);
+                var data = {id: uid, name: uname, age: uage};                                                                       // 데이터를 딕셔너리 형태로 data 변수에 저장
+                var jsonstr = JSON.stringify(data);                                                                                 // JSON 형식으로 data를 변환, jsonstr 변수에 저장
 
-                xhr = new XMLHttpRequest();
-                xhr.onreadystatechange = function() {
-                    if (xhr.readyState == 4) {
-                        document.getElementById('username_'+uid).style.color = "#FF6600";                                        // 바뀐 부분의 색깔 바꾸기 (userid는 바뀐 부분만 받아왔으므로)
-                        document.getElementById('userage_'+uid).style.color = "#FF6600";                                         // 바뀐 부분의 색깔 바꾸기 (userid는 바뀐 부분만 받아왔으므로)
+                xhr = new XMLHttpRequest();                                                                                         // request 요청을 쉽게 할 수 있도록 객체 생성 (편지 준비)(AJAX 요청)
+                xhr.onreadystatechange = function() {                                                                               // XMLHttpRequest 객체의 상태가 변경될 때마다 호출되는 이벤트 핸들러
+                    if (xhr.readyState == 4) {                                                                                      // 사용자가 응답을 처리할 수 있는 상태일 때,
+                        document.getElementById('username_'+uid).style.color = "#FF6600";                                           // 바뀐 부분의 색깔 바꾸기 (userid는 바뀐 부분만 받아왔으므로)
+                        document.getElementById('userage_'+uid).style.color = "#FF6600";                                            // 바뀐 부분의 색깔 바꾸기 (userid는 바뀐 부분만 받아왔으므로)
                     }   
                 };
-                xhr.open("PUT", "/users");
-                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                xhr.open("PUT", "/users");                                                                                          // /users 엔드포인트에 PUT 명령 준비 (편지 작성)
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);                                                                     // X-CSRFToken에 csrftoken 값을 설정, CSRF 공격에 대한 예방
                 xhr.setRequestHeader('Content-Type', 'application/json');                                                           // **JSON 파일 보낼 시 무조건 추가!!!!**
-                xhr.send(jsonstr);
+                xhr.send(jsonstr);                                                                                                  // jsonstr 데이터 보내기 (편지 전송)                                                                                                          
             }
 
             // AJAX로 삭제
+            // elem: 요소(버튼)을 가리키는(참조) 변수
             function deleteUsers(elem) {
                 if (confirm("삭제 하시겠습니까?") == false){
                     return false;
                 }
                 
-                var uid = parseInt(elem.getAttribute('userid'));  
-                var data = { id: uid, name: '', age: 0 }
-                var jsonstr = JSON.stringify(data);
+                var uid = parseInt(elem.getAttribute('userid'));                                                                    // elem의 userid라는 속성을 가져온 후(지정된 요소의 속성 값 반환) 타입을 int로 바꾸고 uid라는 변수에 대입
+                var data = { id: uid, name: '', age: 0 };                                                                           // 데이터를 딕셔너리 형태로 data 변수에 저장
+                var jsonstr = JSON.stringify(data);                                                                                 // JSON 형식으로 data를 변환, jsonstr 변수에 저장
 
-                xhr = new XMLHttpRequest();
+                xhr = new XMLHttpRequest();                                                                                         // request 요청을 쉽게 할 수 있도록 객체 생성 (편지 준비)(AJAX 요청)
                 xhr.onreadystatechange = function() {
-                    if (xhr.readyState == 4) {
-                        var data = xhr.responseText;                                                                                // 삭제
-                        var obj = JSON.parse(data);
+                    if (xhr.readyState == 4) {                                                                                      // 사용자가 응답을 처리할 수 있는 상태일 때,
+                        // var data = xhr.responseText;                                                                                // 삭제
+                        // var obj = JSON.parse(data);
 
-                        document.getElementById('userbox_'+uid).remove();
+                        document.getElementById('userbox_'+uid).remove();                                                           // 괄호 안에 해당하는 id를 가진 요소를 제거
                     }
                 };
-                xhr.open("DELETE", "/users");
-                xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                xhr.send(jsonstr);
+                xhr.open("DELETE", "/users");                                                                                       // /users 엔드포인트에 DELETE 명령 준비 (편지 작성)
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);                                                                     // X-CSRFToken에 csrftoken 값을 설정, CSRF 공격에 대한 예방
+                xhr.setRequestHeader('Content-Type', 'application/json');                                                           // **DELETE METHOD라고 JSON 파일이 안 간다고 생각하지 말기!!!**
+                xhr.send(jsonstr);                                                                                                  // jsonstr 데이터 보내기 (편지 전송)
             }
-        </script>
-{% endblock %}
+        </script>   
+{% endblock %}                                                                                                                      <!--기초 스크립트 블록 끝-->
 </head>
 <body>
     <div style="padding: 10px;">
@@ -114,15 +118,15 @@
     <div style="margin: 20px 0">
         <input type="text" id="username_" value="사용자">
         <input type="text" id="userage_" value="1">
-        <button onclick="postUser()">등록</button>
+        <button onclick="postUser()">등록</button>                                                                                  <!--버튼을 누름으로 postUser() 함수가 실행-->                                                                                
     </div>
 
     <div id="usertable">
         <table width="100%" border="1" cellpadding="0" cellspacing="0">
-        {% if users %}
-            {% for user in users %}
-            <tr style="padding:10px; height: 45px;" id="userbox_{{user.id}}">
-                <td align="center">{{user.id}}</td>
+        {% if users %}                                                                                                              <!--Jinja 템플릿 엔진에서 구현되는 if문-->
+            {% for user in users %}                                                                                                 <!--Jinja 템플릿 엔진에서 구현되는 for문, users 테이블에 있는 열 하나당 반복-->
+            <tr style="padding:10px; height: 45px;" id="userbox_{{user.id}}">                                                        
+                <td align="center">{{user.id}}</td>                                                                                 <!--Jinja 템플릿 엔진에서 구현되는 변수 {{variable}}-->
                 <td align="center"><input type="text" id="username_{{user.id}}" value="{{user.name}}"></td>
                 <td align="center"><input type="text" id="userage_{{user.id}}" value="{{user.age}}"></td>
                 <td align="center"><a href="/users/{{user.id}}"><button>보기</button></a></td>

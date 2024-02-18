@@ -35,7 +35,7 @@ async def read_users(request: Request):                                         
     context["request"] = request                                                                    # key: request, value: request인 첫 번째 딕셔너리 요소 생성
     context["users"] = users                                                                        # key: users, value: users인 두 번째 딕셔너리 요소 생성
 
-    return templetes.TemplateResponse("user_list.html", context)                                    # 응답으로 user_list.html 템플릿 불러옴, 이 템플릿에 context 딕셔너리를 전달 
+    return templetes.TemplateResponse("user_list.html", context)                                    # 응답으로 user_list.html 템플릿 불러옴, 이 템플릿에 context 딕셔너리를 전달(request 정보, users(테이블 속 데이터 정보))
 
 
 @app.get("/users/{user_id}", response_class=HTMLResponse)                                           # user_id: 경로 매개변수, response_class=HTMLResponse: 해당 엔드포인트의 응답 클래스를 HTMLResponse로 설정 -> FastAPI가 해당 엔드포인트의 응답이 HTML임을 인식 후 적절한 형식으로 반환
@@ -53,11 +53,11 @@ async def read_user(request: Request, user_id: int):                            
 
 
 @app.post("/users")
-async def create_user(users: User):                                                                 # model.py의 User 클래스를 users 변수에 넣어서 사용함 
+async def create_user(users: User):                                                                 # FastAPI에선 클라이언트 측에서 온 JSON파일을 처리하기 위해 자동으로 괄호 안에 있는 모델 타입인 파이썬 객체를 만들어 사용할 수 있도록 함
 
     userlist = list(users)                                                                          # users(User) 클래스를 타입으로 가지는 속성으로 하는 리스트 , 딕셔너리를 요소로 가지는 리스트와 유사
-    uname = userlist[1][1]                                                                          # name 속성의 value 를 uname 변수에 저장 
-    uage = userlist[2][1]                                                                           # age 속성의 value를 uage 변수에 저장
+    uname = userlist[1][1]                                                                          # 클라이언트 측에서 온 name 속성의 value 를 uname 변수에 저장 
+    uage = userlist[2][1]                                                                           # 클라이언트 측에서 온 age 속성의 value를 uage 변수에 저장
 
 
     user = UserTable()                                                                              # ORM 객체를 생성 (서버와 DB의 중간다리 역할), ORM 객체에는 __tablename__에 해당하는 테이블의 정보가 있음
@@ -70,12 +70,12 @@ async def create_user(users: User):                                             
     return {"result_msg", f"{uname} Registered..."}
 
 @app.put("/users")
-async def update_users(users: User):                                                                # model.py의 User 클래스를 users 변수에 넣어서 사용함
+async def update_users(users: User):                                                                # FastAPI에선 클라이언트 측에서 온 JSON파일을 처리하기 위해 자동으로 괄호 안에 있는 모델 타입인 파이썬 객체를 만들어 사용할 수 있도록 함
 
     userlist = list(users)                                                                          # users(User) 클래스를 타입으로 가지는 속성으로 하는 리스트 , 딕셔너리를 요소로 가지는 리스트와 유사
-    uid = userlist[0][1]                                                                            # id 속성의 value 를 uid 변수에 저장 
-    uname = userlist[1][1]                                                                          # name 속성의 value 를 uname 변수에 저장 
-    uage = userlist[2][1]                                                                           # age 속성의 value 를 uage 변수에 저장 
+    uid = userlist[0][1]                                                                            # 클라이언트 측에서 온 id 속성의 value 를 uid 변수에 저장 
+    uname = userlist[1][1]                                                                          # 클라이언트 측에서 온 name 속성의 value 를 uname 변수에 저장 
+    uage = userlist[2][1]                                                                           # 클라이언트 측에서 온 age 속성의 value 를 uage 변수에 저장 
                        
    
     user = session.query(UserTable).filter(UserTable.id == uid).first()                             # UserTable 클래스에 속해있는 테이블에서 filter 속 조건에 맞는 데이터들 중 첫 번째로 반환되는 항목을 가져옴  
@@ -86,12 +86,12 @@ async def update_users(users: User):                                            
     return {"result_msg", f"{uname} updated..."}
     
 @app.delete("/users")
-async def delete_users(users: User):                                                                # model.py의 User 클래스를 users 변수에 넣어서 사용함
+async def delete_users(users: User):                                                                # FastAPI에선 클라이언트 측에서 온 JSON파일을 처리하기 위해 자동으로 괄호 안에 있는 모델 타입인 파이썬 객체를 만들어 사용할 수 있도록 함
 
     userlist = list(users)                                                                          # users(User) 클래스를 타입으로 가지는 속성으로 하는 리스트 , 딕셔너리를 요소로 가지는 리스트와 유사
-    uid = userlist[0][1]                                                                            # id 속성의 value 를 uid 변수에 저장
+    uid = userlist[0][1]                                                                            # 클라이언트 측에서 온 id 속성의 value 를 uid 변수에 저장
 
     session.query(UserTable).filter(UserTable.id == uid).delete()                                   # UserTable 클래스에 속해있는 테이블에서 filter 속 조건에 맞는 데이터를 삭제
-    session.commit()                                                                                # session 실행 (데이터베이스에 위의 name, age 추가)
+    session.commit()                                                                                # session 실행 (삭제 사항 데이터베이스에 적용)
 
     return {"result_msg", "User deleted..."}
